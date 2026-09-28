@@ -119,6 +119,16 @@ td input[type=text]{padding:8px 10px;min-width:150px}
 td .cks{display:flex;gap:10px;flex-wrap:wrap}
 td .cks label{display:inline-flex;gap:4px;align-items:center;font-size:.85rem;white-space:nowrap}
 td .acts{display:flex;gap:6px}
+.avail{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.slot{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.slot h3{font-size:1.1rem;color:var(--wine);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.slot h3 span{font:700 .95rem var(--body);color:var(--ink);font-variant-numeric:tabular-nums}
+.slot .hrs{font-size:.8rem;color:var(--muted)}
+.slot ol{margin:0;padding-left:20px;font-size:.92rem;display:flex;flex-direction:column;gap:2px}
+.slot .none{font-size:.85rem;color:var(--muted);font-style:italic}
+.avail-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.avail-head h3{font-size:1.2rem}
+#panel{display:flex;flex-direction:column;gap:16px}
 .admin-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
@@ -245,6 +255,13 @@ td .acts{display:flex;gap:6px}
     <div id="panel" hidden>
       <div class="summary" id="summary"></div>
 
+      <div class="avail-head">
+        <h3>Disponibles por turno</h3>
+        <button type="button" class="btn2" id="copy-avail">Copiar listas</button>
+      </div>
+      <div class="avail" id="avail"></div>
+      <p class="warn" style="font-size:.85rem">"Sin preferencia" son los de barra que no han marcado turno: se pueden poner donde falte gente. Cada persona aparece en todos los turnos que marcó.</p>
+
       <form id="add" novalidate style="background:none;border:0;padding:0">
         <div class="row">
           <div class="field"><label for="n-name">Añadir persona</label><input type="text" id="n-name" maxlength="40" placeholder="Nombre"></div>
@@ -283,7 +300,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
   const TURNOS={principio:"Principio",medio:"Medio",final:"Final"};
   const $=id=>document.getElementById(id);
   const sb=(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
-  let signups=[], isAdmin=false;
+  let signups=[], isAdmin=false, availText="";
 
   function setStatus(el,msg,kind){el.className="status"+(kind?" "+kind:"");el.textContent=msg||""}
   const hasBarra=g=>g==="barras"||g==="ambos";
@@ -359,7 +376,13 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
     let user=$("a-email").value.trim().toLowerCase(); if(user&&!user.includes("@")) user+="@sangriadaindus.com";
     const {error}=await sb.auth.signInWithPassword({email:user,password:$("a-pass").value});
     $("login-btn").disabled=false;
-    if(error){setStatus(st,"Usuario o contraseña incorrectos.","err");return}
+    if(error){
+      const m=(error.message||"").toLowerCase();
+      let msg="Usuario o contraseña incorrectos.";
+      if(m.includes("not confirmed")) msg="El usuario existe pero no está confirmado. En Supabase → Authentication → Users, confírmalo.";
+      else if(m.includes("invalid login")) msg="Usuario o contraseña incorrectos (o el usuario no existe en Supabase).";
+      else if(m) msg="No se pudo entrar: "+error.message;
+      setStatus(st,msg,"err");return}
     $("a-pass").value="";setStatus(st,"");
     setAdmin(true);
   });
@@ -372,6 +395,28 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
     add("Total",signups.length);
     Object.keys(LABELS).forEach(g=>add(LABELS[g],signups.filter(s=>s.grupo===g).length));
     Object.keys(TURNOS).forEach(t=>add("Barra "+TURNOS[t].toLowerCase(),signups.filter(s=>s.turnos.includes(t)).length));
+
+    // Disponibles por turno
+    const SLOTS=[
+      {t:"Montaje",h:"Sobre las 12:00",f:s=>s.grupo==="montaje"||s.grupo==="ambos"},
+      {t:"Barra · Principio",h:"16:00–18:00",f:s=>hasBarra(s.grupo)&&s.turnos.includes("principio")},
+      {t:"Barra · Medio",h:"18:00–19:30",f:s=>hasBarra(s.grupo)&&s.turnos.includes("medio")},
+      {t:"Barra · Final",h:"19:30–21:00",f:s=>hasBarra(s.grupo)&&s.turnos.includes("final")},
+      {t:"Barra · Sin preferencia",h:"Cualquier hora",f:s=>hasBarra(s.grupo)&&!s.turnos.length}
+    ];
+    const av=$("avail");av.textContent="";
+    const lists=SLOTS.map(sl=>{
+      const people=signups.filter(sl.f).map(p=>p.nombre).sort((a,b)=>a.localeCompare(b,"es"));
+      const box=document.createElement("div");box.className="slot";
+      const h=document.createElement("h3");h.append(sl.t);const n=document.createElement("span");n.textContent=people.length;h.appendChild(n);
+      const hr=document.createElement("div");hr.className="hrs";hr.textContent=sl.h;
+      box.append(h,hr);
+      if(people.length){const ol=document.createElement("ol");people.forEach(p=>{const li=document.createElement("li");li.textContent=p;ol.appendChild(li)});box.appendChild(ol)}
+      else{const p=document.createElement("p");p.className="none";p.textContent="Nadie";box.appendChild(p)}
+      av.appendChild(box);
+      return "*"+sl.t+"* ("+sl.h+") – "+people.length+"\n"+(people.length?people.map(p=>"- "+p).join("\n"):"- (nadie)");
+    });
+    availText=lists.join("\n\n");
 
     // Tabla
     const tb=$("rows");tb.textContent="";
@@ -409,6 +454,11 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
       tr.append(tdN,tdG,tdT,tdA);tb.appendChild(tr);
     });
   }
+
+  $("copy-avail").addEventListener("click",()=>{
+    const btn=$("copy-avail");
+    try{navigator.clipboard.writeText(availText).then(()=>{btn.textContent="Copiado";setTimeout(()=>btn.textContent="Copiar listas",2000)},()=>{btn.textContent="No se pudo copiar"})}catch(e){btn.textContent="No se pudo copiar"}
+  });
 
   $("add").addEventListener("submit",async e=>{
     e.preventDefault();
