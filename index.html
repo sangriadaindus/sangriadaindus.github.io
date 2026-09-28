@@ -43,6 +43,12 @@ h2{font-size:1.9rem}
 .steps li::before{content:counter(s);width:32px;height:32px;border-radius:50%;background:var(--surface);border:2px solid var(--citrus);display:grid;place-items:center;font-weight:700;font-family:var(--display)}
 .steps b{font-weight:600}
 .warn{font-size:.92rem;color:var(--muted)}
+.stores{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.storebtn{display:inline-block;background:var(--citrus);color:#1d1203;font-weight:700;text-decoration:none;padding:12px 20px;border-radius:10px}
+.storebtn:hover{filter:brightness(1.08)}
+.storebtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.storealt{font-size:.88rem;color:var(--muted)}
+.storealt a{color:var(--ink)}
 
 /* Groups */
 .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
@@ -82,7 +88,38 @@ button:focus-visible{outline:2px solid var(--citrus);outline-offset:2px}
 .fallback{display:flex;flex-direction:column;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px}
 .fallback code{font:500 .95rem var(--body);user-select:all}
 .fallback button{align-self:flex-start;font:600 .9rem var(--body);border:1.5px solid var(--wine);color:var(--wine);background:none;border-radius:8px;padding:6px 12px;cursor:pointer}
-footer{font-size:.85rem;color:var(--muted)}
+footer{font-size:.85rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+.linkbtn{background:none;border:0;color:var(--muted);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+.linkbtn:hover{color:var(--ink)}
+.radios input[type=checkbox]{accent-color:var(--wine)}
+.radios label small{color:var(--muted);font-weight:400}
+.note{font-size:.88rem;color:var(--muted);background:var(--surface-2);border-radius:8px;padding:8px 12px}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+legend{font-weight:600;font-size:.92rem;padding:0;margin-bottom:6px}
+.shifts{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+/* Admin */
+.admin{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.admin h2{font-size:1.6rem}
+.admin .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.admin .row .field{flex:1 1 180px}
+.admin #a-email,.admin input[type=password]{font:inherit;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);width:100%}
+.admin select{font:inherit;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)}
+.btn2{font:600 .9rem var(--body);border:1.5px solid var(--wine);color:var(--wine);background:none;border-radius:8px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.btn2.danger{border-color:#FF9EA4;color:#FF9EA4}
+.btn2:disabled{opacity:.5;cursor:default}
+.summary{display:flex;flex-wrap:wrap;gap:8px}
+.summary span{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.summary b{color:var(--wine)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td input[type=text]{padding:8px 10px;min-width:150px}
+td .cks{display:flex;gap:10px;flex-wrap:wrap}
+td .cks label{display:inline-flex;gap:4px;align-items:center;font-size:.85rem;white-space:nowrap}
+td .acts{display:flex;gap:6px}
+.admin-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -101,8 +138,15 @@ footer{font-size:.85rem;color:var(--muted)}
     <span class="tag">Todos, antes del día</span>
     <h2 id="sumup-h">Descárgate SumUp</h2>
     <p>Sin esto no se puede cobrar en las barras. Tarda dos minutos.</p>
+    <div class="stores">
+      <a class="storebtn" id="store-main" href="https://apps.apple.com/es/app/sumup-business/id514879214" target="_blank" rel="noopener">Descargar SumUp Business</a>
+      <span class="storealt" id="store-alt">
+        <a href="https://apps.apple.com/es/app/sumup-business/id514879214" id="lnk-ios" target="_blank" rel="noopener">App Store (iPhone)</a> ·
+        <a href="https://play.google.com/store/apps/details?id=com.kaching.merchant&amp;hl=es" id="lnk-and" target="_blank" rel="noopener">Google Play (Android)</a>
+      </span>
+    </div>
     <ol class="steps">
-      <li><div>Busca <b>“SumUp Business”</b> en la App Store o en Google Play y descárgatela (icono negro con una S blanca).</div></li>
+      <li><div>Descárgate <b>“SumUp Business”</b> con el botón de arriba o búscala en tu tienda de apps (icono negro con una S blanca).</div></li>
       <li><div>Regístrate <b>solo con tu correo y una contraseña</b>. Nada más.</div></li>
       <li><div>Si te pide registrarte como empresario o rellenar más datos, <b>no completes nada</b>. Déjalo ahí.</div></li>
       <li><div>Manda el correo con el que te has registrado <b>al capitán de tu equipo</b>. El capitán se los pasará todos a Velasco.</div></li>
@@ -132,6 +176,7 @@ footer{font-size:.85rem;color:var(--muted)}
           <li>Cobrar con SumUp</li>
           <li>Echar una mano donde haga falta según la hora a la que llegues</li>
         </ul>
+        <div class="shifts"><span class="chip">Principio 16:00–18:00</span><span class="chip">Medio 18:00–19:30</span><span class="chip">Final 19:30–21:00</span></div>
         <div class="names"><span class="count"></span><ul></ul></div>
       </article>
       <article class="group" data-group="ambos">
@@ -162,6 +207,15 @@ footer{font-size:.85rem;color:var(--muted)}
           <label><input type="radio" name="group" id="g-ambos" value="ambos"> Montaje + Barras</label>
         </div>
       </div>
+      <fieldset id="turnos-field">
+        <legend>¿Cuándo prefieres estar en barra? <small style="font-weight:400;color:var(--muted)">(puedes marcar varios)</small></legend>
+        <div class="radios">
+          <label><input type="checkbox" name="turno" id="t-principio" value="principio"> Principio <small>16:00–18:00</small></label>
+          <label><input type="checkbox" name="turno" id="t-medio" value="medio"> Medio <small>18:00–19:30</small></label>
+          <label><input type="checkbox" name="turno" id="t-final" value="final"> Final <small>19:30–21:00</small></label>
+        </div>
+        <p class="note">Intentaremos respetar vuestras preferencias, pero no tiene por qué tocaros justo el turno que habéis pedido. Los turnos se repartirán según la gente que haya en cada franja.</p>
+      </fieldset>
       <button type="submit" class="primary" id="submit">Apuntarme</button>
       <p class="status" id="status" role="status"></p>
       <div class="fallback" id="fallback" hidden>
@@ -172,31 +226,72 @@ footer{font-size:.85rem;color:var(--muted)}
     </form>
   </section>
 
-  <footer>Dudas: pregunta en el grupo “Voluntarios Sangriada ‘26”.</footer>
+  <section class="admin" id="admin" hidden aria-labelledby="admin-h">
+    <div class="admin-top">
+      <h2 id="admin-h">Modo admin</h2>
+      <button type="button" class="btn2" id="logout" hidden>Cerrar sesión</button>
+    </div>
+
+    <form id="login" novalidate>
+      <p class="warn">Solo para organizadores.</p>
+      <div class="row">
+        <div class="field"><label for="a-email">Usuario</label><input type="text" id="a-email" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+        <div class="field"><label for="a-pass">Contraseña</label><input type="password" id="a-pass" autocomplete="current-password" required></div>
+        <button type="submit" class="primary" id="login-btn">Entrar</button>
+      </div>
+      <p class="status" id="login-status" role="status"></p>
+    </form>
+
+    <div id="panel" hidden>
+      <div class="summary" id="summary"></div>
+
+      <form id="add" novalidate style="background:none;border:0;padding:0">
+        <div class="row">
+          <div class="field"><label for="n-name">Añadir persona</label><input type="text" id="n-name" maxlength="40" placeholder="Nombre"></div>
+          <div class="field" style="flex:0 1 auto"><label for="n-group">Grupo</label>
+            <select id="n-group"><option value="montaje">Montaje</option><option value="barras" selected>Barras</option><option value="ambos">Montaje + Barras</option></select></div>
+          <div class="cks" style="display:flex;gap:10px;flex-wrap:wrap;padding-bottom:10px">
+            <label><input type="checkbox" class="n-t" value="principio"> Principio</label>
+            <label><input type="checkbox" class="n-t" value="medio"> Medio</label>
+            <label><input type="checkbox" class="n-t" value="final"> Final</label>
+          </div>
+          <button type="submit" class="primary">Añadir</button>
+        </div>
+      </form>
+      <p class="status" id="admin-status" role="status"></p>
+
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Nombre</th><th>Grupo</th><th>Turnos de barra</th><th></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer><span>Dudas: pregunta en el grupo “Voluntarios Sangriada ‘26”.</span><button type="button" class="linkbtn" id="admin-toggle">Acceso organizadores</button></footer>
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script>
-// ====== CONFIGURA AQUÍ TU SUPABASE (Project Settings → API) ======
-const SUPABASE_URL = "https://akqtdkgsfkqmpuenctnq.supabase.co";      // p. ej. "https://abcdxyz.supabase.co"
-const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6"; // la clave "anon public"
-// ==================================================================
+// ====== CONFIGURACIÓN SUPABASE ======
+const SUPABASE_URL = "https://akqtdkgsfkqmpuenctnq.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
+// =====================================
 (function(){
   const LABELS={montaje:"Montaje",barras:"Barras",ambos:"Montaje + Barras"};
-  const statusEl=document.getElementById("status");
-  const fallback=document.getElementById("fallback");
-  const fbText=document.getElementById("fallback-text");
-  const submitBtn=document.getElementById("submit");
-  let signups=[];
+  const TURNOS={principio:"Principio",medio:"Medio",final:"Final"};
+  const $=id=>document.getElementById(id);
   const sb=(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+  let signups=[], isAdmin=false;
 
-  function setStatus(msg,kind){statusEl.className="status"+(kind?" "+kind:"");statusEl.textContent=msg||""}
+  function setStatus(el,msg,kind){el.className="status"+(kind?" "+kind:"");el.textContent=msg||""}
+  const hasBarra=g=>g==="barras"||g==="ambos";
 
-  function render(){
+  /* ---------- Lista pública ---------- */
+  function renderPublic(){
     document.querySelectorAll(".group").forEach(card=>{
-      const g=card.dataset.group;
-      const list=signups.filter(s=>s.grupo===g);
-      const ul=card.querySelector(".names ul");
+      const g=card.dataset.group, list=signups.filter(s=>s.grupo===g), ul=card.querySelector(".names ul");
       ul.textContent="";
       card.querySelector(".count").textContent=list.length===1?"1 apuntado":list.length+" apuntados";
       if(!list.length){const li=document.createElement("li");li.className="empty";li.style.cssText="border:0;background:none;padding:0";li.textContent=sb?"Nadie todavía":"Lista no conectada";ul.appendChild(li);return}
@@ -205,41 +300,144 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6"; // l
   }
 
   async function load(){
-    if(!sb){render();return}
-    const {data,error}=await sb.from("voluntarios").select("id,nombre,grupo,created_at").order("created_at",{ascending:true});
-    if(error){setStatus("No se pudo cargar la lista. Recarga la página.","err");return}
-    signups=data||[];render();
+    if(!sb){renderPublic();return}
+    const {data,error}=await sb.from("voluntarios").select("id,nombre,grupo,turnos,created_at").order("created_at",{ascending:true});
+    if(error){setStatus($("status"),"No se pudo cargar la lista. Recarga la página.","err");return}
+    signups=(data||[]).map(r=>({...r,turnos:r.turnos||[]}));
+    renderPublic(); if(isAdmin) renderAdmin();
   }
 
-  function showFallback(name,group){fbText.textContent="Me apunto a "+LABELS[group]+": "+name;fallback.hidden=false}
-
-  document.getElementById("signup").addEventListener("submit",async e=>{
-    e.preventDefault();
-    const name=document.getElementById("name").value.trim().replace(/\s+/g," ").slice(0,40);
+  /* ---------- Formulario ---------- */
+  function syncTurnos(){
     const g=(document.querySelector('input[name="group"]:checked')||{}).value;
-    if(!name){setStatus("Escribe tu nombre para apuntarte.","err");document.getElementById("name").focus();return}
-    if(!LABELS[g]){setStatus("Elige un grupo.","err");return}
-    if(!sb){setStatus("");showFallback(name,g);return}
-    if(signups.some(s=>s.nombre.toLowerCase()===name.toLowerCase()&&s.grupo===g)){setStatus(name+" ya está en "+LABELS[g]+".","err");return}
-    submitBtn.disabled=true;setStatus("Guardando…");
-    const {error}=await sb.from("voluntarios").insert({nombre:name,grupo:g});
-    submitBtn.disabled=false;
-    if(error){setStatus("No se pudo guardar. Prueba otra vez o avisa por el grupo.","err");showFallback(name,g);return}
-    setStatus("¡Apuntado a "+LABELS[g]+"!","ok");
-    document.getElementById("name").value="";
+    $("turnos-field").hidden=!hasBarra(g);
+  }
+  document.querySelectorAll('input[name="group"]').forEach(r=>r.addEventListener("change",syncTurnos));
+  syncTurnos();
+
+  $("signup").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const st=$("status");
+    const name=$("name").value.trim().replace(/\s+/g," ").slice(0,40);
+    const g=(document.querySelector('input[name="group"]:checked')||{}).value;
+    const turnos=hasBarra(g)?[...document.querySelectorAll('input[name="turno"]:checked')].map(c=>c.value):[];
+    if(!name){setStatus(st,"Escribe tu nombre para apuntarte.","err");$("name").focus();return}
+    if(!LABELS[g]){setStatus(st,"Elige un grupo.","err");return}
+    if(!sb){setStatus(st,"");$("fallback-text").textContent="Me apunto a "+LABELS[g]+(turnos.length?" ("+turnos.map(t=>TURNOS[t]).join(", ")+")":"")+": "+name;$("fallback").hidden=false;return}
+    if(signups.some(s=>s.nombre.toLowerCase()===name.toLowerCase()&&s.grupo===g)){setStatus(st,name+" ya está en "+LABELS[g]+".","err");return}
+    $("submit").disabled=true;setStatus(st,"Guardando…");
+    const {error}=await sb.from("voluntarios").insert({nombre:name,grupo:g,turnos});
+    $("submit").disabled=false;
+    if(error){setStatus(st,"No se pudo guardar. Prueba otra vez o avisa por el grupo.","err");return}
+    setStatus(st,"¡Apuntado a "+LABELS[g]+"!","ok");
+    $("name").value="";document.querySelectorAll('input[name="turno"]').forEach(c=>c.checked=false);
     load();
   });
 
-  document.getElementById("copy").addEventListener("click",()=>{
-    const t=fbText.textContent,btn=document.getElementById("copy");
-    const sel=()=>{const r=document.createRange();r.selectNodeContents(fbText);const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="Mantén pulsado para copiar"};
+  $("copy").addEventListener("click",()=>{
+    const t=$("fallback-text").textContent,btn=$("copy");
+    const sel=()=>{const r=document.createRange();r.selectNodeContents($("fallback-text"));const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="Mantén pulsado para copiar"};
     try{navigator.clipboard.writeText(t).then(()=>{btn.textContent="Copiado";setTimeout(()=>btn.textContent="Copiar mensaje",2000)},sel)}catch(e){sel()}
   });
 
+  /* ---------- Modo admin ---------- */
+  function openAdmin(){$("admin").hidden=false;$("admin").scrollIntoView({behavior:"smooth"})}
+  $("admin-toggle").addEventListener("click",()=>{ if($("admin").hidden) openAdmin(); else $("admin").hidden=true; });
+  if(location.hash==="#admin") $("admin").hidden=false;
+
+  function setAdmin(on){
+    isAdmin=on;
+    $("login").hidden=on; $("panel").hidden=!on; $("logout").hidden=!on;
+    if(on){ $("admin").hidden=false; renderAdmin(); }
+  }
+
+  $("login").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const st=$("login-status");
+    if(!sb){setStatus(st,"Supabase no está configurado.","err");return}
+    $("login-btn").disabled=true;setStatus(st,"Entrando…");
+    let user=$("a-email").value.trim().toLowerCase(); if(user&&!user.includes("@")) user+="@sangriadaindus.com";
+    const {error}=await sb.auth.signInWithPassword({email:user,password:$("a-pass").value});
+    $("login-btn").disabled=false;
+    if(error){setStatus(st,"Usuario o contraseña incorrectos.","err");return}
+    $("a-pass").value="";setStatus(st,"");
+    setAdmin(true);
+  });
+  $("logout").addEventListener("click",async()=>{await sb.auth.signOut();setAdmin(false)});
+
+  function renderAdmin(){
+    // Resumen
+    const sum=$("summary");sum.textContent="";
+    const add=(label,n)=>{const sp=document.createElement("span");sp.append(label+": ");const b=document.createElement("b");b.textContent=n;sp.append(b);sum.appendChild(sp)};
+    add("Total",signups.length);
+    Object.keys(LABELS).forEach(g=>add(LABELS[g],signups.filter(s=>s.grupo===g).length));
+    Object.keys(TURNOS).forEach(t=>add("Barra "+TURNOS[t].toLowerCase(),signups.filter(s=>s.turnos.includes(t)).length));
+
+    // Tabla
+    const tb=$("rows");tb.textContent="";
+    if(!signups.length){const tr=document.createElement("tr");const td=document.createElement("td");td.colSpan=4;td.textContent="Todavía no hay nadie apuntado.";td.style.color="var(--muted)";tr.appendChild(td);tb.appendChild(tr);return}
+    signups.forEach(s=>{
+      const tr=document.createElement("tr");
+      const tdN=document.createElement("td");const inp=document.createElement("input");inp.type="text";inp.value=s.nombre;inp.maxLength=40;inp.setAttribute("aria-label","Nombre");tdN.appendChild(inp);
+      const tdG=document.createElement("td");const sel=document.createElement("select");sel.setAttribute("aria-label","Grupo");
+      Object.keys(LABELS).forEach(g=>{const o=document.createElement("option");o.value=g;o.textContent=LABELS[g];if(g===s.grupo)o.selected=true;sel.appendChild(o)});tdG.appendChild(sel);
+      const tdT=document.createElement("td");const cks=document.createElement("div");cks.className="cks";
+      Object.keys(TURNOS).forEach(t=>{const l=document.createElement("label");const c=document.createElement("input");c.type="checkbox";c.value=t;c.checked=s.turnos.includes(t);l.append(c," "+TURNOS[t]);cks.appendChild(l)});tdT.appendChild(cks);
+      const tdA=document.createElement("td");const acts=document.createElement("div");acts.className="acts";
+      const save=document.createElement("button");save.type="button";save.className="btn2";save.textContent="Guardar";save.disabled=true;
+      const del=document.createElement("button");del.type="button";del.className="btn2 danger";del.textContent="Borrar";
+      acts.append(save,del);tdA.appendChild(acts);
+      const dirty=()=>{save.disabled=false};
+      inp.addEventListener("input",dirty);sel.addEventListener("change",dirty);cks.addEventListener("change",dirty);
+      save.addEventListener("click",async()=>{
+        const nombre=inp.value.trim().replace(/\s+/g," ");
+        if(!nombre){setStatus($("admin-status"),"El nombre no puede estar vacío.","err");return}
+        const grupo=sel.value;
+        const turnos=hasBarra(grupo)?[...cks.querySelectorAll("input:checked")].map(c=>c.value):[];
+        save.disabled=true;
+        const {error}=await sb.from("voluntarios").update({nombre,grupo,turnos}).eq("id",s.id);
+        if(error){save.disabled=false;setStatus($("admin-status"),"No se pudo guardar: "+error.message,"err");return}
+        setStatus($("admin-status"),"Guardado: "+nombre,"ok");load();
+      });
+      del.addEventListener("click",async()=>{
+        if(!del.dataset.armed){del.dataset.armed="1";del.textContent="¿Seguro?";setTimeout(()=>{if(del.isConnected){delete del.dataset.armed;del.textContent="Borrar"}},3000);return}
+        del.disabled=true;
+        const {error}=await sb.from("voluntarios").delete().eq("id",s.id);
+        if(error){del.disabled=false;setStatus($("admin-status"),"No se pudo borrar: "+error.message,"err");return}
+        setStatus($("admin-status"),"Borrado: "+s.nombre,"ok");load();
+      });
+      tr.append(tdN,tdG,tdT,tdA);tb.appendChild(tr);
+    });
+  }
+
+  $("add").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const st=$("admin-status");
+    const nombre=$("n-name").value.trim().replace(/\s+/g," ").slice(0,40);
+    const grupo=$("n-group").value;
+    const turnos=hasBarra(grupo)?[...document.querySelectorAll(".n-t:checked")].map(c=>c.value):[];
+    if(!nombre){setStatus(st,"Escribe un nombre.","err");return}
+    const {error}=await sb.from("voluntarios").insert({nombre,grupo,turnos});
+    if(error){setStatus(st,"No se pudo añadir: "+error.message,"err");return}
+    $("n-name").value="";document.querySelectorAll(".n-t").forEach(c=>c.checked=false);
+    setStatus(st,"Añadido: "+nombre,"ok");load();
+  });
+
+  /* ---------- Tienda de apps según el móvil ---------- */
+  (function(){
+    const ua=navigator.userAgent||"", ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1), android=/Android/i.test(ua);
+    const main=$("store-main");
+    if(ios){main.href=$("lnk-ios").href;main.textContent="Descargar en App Store";$("store-alt").innerHTML='¿Tienes Android? <a href="'+$("lnk-and").href+'" target="_blank" rel="noopener">Google Play</a>';}
+    else if(android){main.href=$("lnk-and").href;main.textContent="Descargar en Google Play";$("store-alt").innerHTML='¿Tienes iPhone? <a href="'+$("lnk-ios").href+'" target="_blank" rel="noopener">App Store</a>';}
+    else{main.hidden=true;}
+  })();
+
+  /* ---------- Arranque ---------- */
   if(sb){
     load();
     sb.channel("voluntarios").on("postgres_changes",{event:"*",schema:"public",table:"voluntarios"},load).subscribe();
-  }else render();
+    sb.auth.getSession().then(({data})=>{ if(data&&data.session) setAdmin(true); });
+  }else renderPublic();
 })();
 </script>
 </body>
