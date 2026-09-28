@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sangriada Industriales 2026 · Voluntarios</title>
+<meta name="description" content="Qué tiene que hacer cada voluntario en la Sangriada Industriales 2026 y lista para apuntarse.">
+<meta property="og:image" content="banner.jpg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&display=swap">
+<style id="page-css">
+:root{
+  color-scheme:dark;
+  --bg:#08306A; --surface:#0D3B7C; --surface-2:#062656; --ink:#F7EFE3; --muted:#B9C9E3; --line:#2A568F;
+  --wine:#BCDDF8; --wine-soft:#113F80; --citrus:#E8A34A; --citrus-soft:#0B2E63; --ok:#9FE3B8; --red:#D0414B;
+  --display:"Anton","Impact","Arial Narrow Bold",sans-serif;
+  --body:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);padding-inline:16px;padding-block:32px 56px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--citrus)}
+header{display:flex;flex-direction:column;gap:10px}
+.banner{display:block;width:100%;height:auto;border-radius:16px}
+header h1{font-size:clamp(2rem,7vw,3rem);font-weight:400;color:var(--ink);text-transform:uppercase;letter-spacing:.01em}
+h2,h3{font-weight:400;text-transform:uppercase;letter-spacing:.02em}
+.when{display:flex;flex-wrap:wrap;gap:8px}
+.when span{background:var(--ink);color:var(--bg);font-weight:700;padding:6px 12px;border-radius:8px;font-size:.95rem}
+.when span.alt{background:transparent;color:var(--wine);border:1.5px solid var(--wine)}
+.lead{color:var(--muted);max-width:60ch}
+section{display:flex;flex-direction:column;gap:16px}
+h2{font-size:1.9rem}
+
+/* SumUp */
+.sumup{background:var(--citrus-soft);border:2px solid var(--citrus);border-radius:14px;padding:22px 20px;display:flex;flex-direction:column;gap:14px}
+.sumup .tag{align-self:flex-start;background:var(--citrus);color:#1d1203;font-weight:600;font-size:.8rem;padding:3px 10px;border-radius:99px;letter-spacing:.04em}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;counter-increment:s}
+.steps li::before{content:counter(s);width:32px;height:32px;border-radius:50%;background:var(--surface);border:2px solid var(--citrus);display:grid;place-items:center;font-weight:700;font-family:var(--display)}
+.steps b{font-weight:600}
+.warn{font-size:.92rem;color:var(--muted)}
+
+/* Groups */
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.group h3{font-size:1.6rem;color:var(--wine)}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.8rem;font-weight:600;padding:3px 9px;border-radius:99px;background:var(--surface-2);color:var(--wine)}
+.chip.free{background:transparent;border:1px solid var(--ok);color:var(--ok)}
+.chip.pay{background:transparent;border:1px solid var(--citrus);color:var(--citrus)}
+.group ul.todo{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:.95rem}
+.names{border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px;margin-top:auto}
+.names .count{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.names ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.names li{display:inline-flex;align-items:center;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px 4px 2px 9px;font-size:.9rem}
+.names li button{border:0;background:none;color:var(--muted);cursor:pointer;font:inherit;font-size:.8rem;padding:2px 6px;border-radius:6px}
+.names li button:hover,.names li button:focus-visible{background:var(--wine-soft);color:var(--wine)}
+.names .empty{font-size:.88rem;color:var(--muted);font-style:italic}
+
+/* Form */
+form{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+label{font-weight:600;font-size:.92rem}
+.field{display:flex;flex-direction:column;gap:6px}
+input[type=text]{font:inherit;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);width:100%}
+input[type=text]:focus{outline:none;border-color:var(--wine)}
+input::placeholder{color:var(--muted)}
+.radios{display:flex;flex-wrap:wrap;gap:8px}
+.radios label{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer;font-weight:500}
+.radios input{accent-color:var(--wine)}
+.radios label:has(input:checked){border-color:var(--wine);background:var(--wine-soft)}
+.radios label:has(input:focus-visible){outline:2px solid var(--wine);outline-offset:2px}
+button.primary{align-self:flex-start;font:700 1rem var(--body);background:var(--ink);color:var(--bg);border:0;border-radius:10px;padding:12px 22px;cursor:pointer}
+button.primary:disabled{opacity:.6;cursor:wait}
+button:focus-visible{outline:2px solid var(--citrus);outline-offset:2px}
+.status{font-size:.92rem;min-height:1.4em}
+.status.ok{color:var(--ok)}
+.status.err{color:#FF9EA4}
+.fallback{display:flex;flex-direction:column;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.fallback code{font:500 .95rem var(--body);user-select:all}
+.fallback button{align-self:flex-start;font:600 .9rem var(--body);border:1.5px solid var(--wine);color:var(--wine);background:none;border-radius:8px;padding:6px 12px;cursor:pointer}
+footer{font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="wrap">
+  <header>
+    <img class="banner" src="banner.jpg" alt="Sangriada Industriales 2026" width="1200" height="499">
+    <p class="eyebrow">Voluntarios · ETSII</p>
+    <h1>Qué tiene que hacer cada uno</h1>
+    <div class="when"><span>Sábado 3 de octubre</span><span>Fiesta 16:00 – 21:00</span><span class="alt">Montaje sobre las 12:00</span></div>
+    <p class="lead">Aquí está todo lo que se ha dicho en el grupo de WhatsApp, junto y ordenado. Lee lo de SumUp, elige tu grupo y apúntate abajo.</p>
+  </header>
+
+  <section class="sumup" aria-labelledby="sumup-h">
+    <span class="tag">Todos, antes del día</span>
+    <h2 id="sumup-h">Descárgate SumUp</h2>
+    <p>Sin esto no se puede cobrar en las barras. Tarda dos minutos.</p>
+    <ol class="steps">
+      <li><div>Busca <b>“SumUp Business”</b> en la App Store o en Google Play y descárgatela (icono negro con una S blanca).</div></li>
+      <li><div>Regístrate <b>solo con tu correo y una contraseña</b>. Nada más.</div></li>
+      <li><div>Si te pide registrarte como empresario o rellenar más datos, <b>no completes nada</b>. Déjalo ahí.</div></li>
+      <li><div>Manda el correo con el que te has registrado <b>al capitán de tu equipo</b>. El capitán se los pasará todos a Velasco.</div></li>
+    </ol>
+    <p class="warn">Si ya lo has hecho, no hace falta repetirlo.</p>
+  </section>
+
+  <section aria-labelledby="groups-h">
+    <h2 id="groups-h">Los tres grupos</h2>
+    <div class="groups">
+      <article class="group" data-group="montaje">
+        <h3>Montaje</h3>
+        <div class="meta"><span class="chip">Sobre las 12:00</span><span class="chip free">No pagas entrada</span></div>
+        <ul class="todo">
+          <li>Descargar las bebidas</li>
+          <li>Montar las barras</li>
+          <li>Comprar hielos</li>
+          <li>Dejar todo listo, como el año pasado</li>
+        </ul>
+        <div class="names"><span class="count"></span><ul></ul></div>
+      </article>
+      <article class="group" data-group="barras">
+        <h3>Barras</h3>
+        <div class="meta"><span class="chip">Durante la fiesta</span><span class="chip pay">2 € en la puerta</span></div>
+        <ul class="todo">
+          <li>Servir en las barras</li>
+          <li>Cobrar con SumUp</li>
+          <li>Echar una mano donde haga falta según la hora a la que llegues</li>
+        </ul>
+        <div class="names"><span class="count"></span><ul></ul></div>
+      </article>
+      <article class="group" data-group="ambos">
+        <h3>Montaje + Barras</h3>
+        <div class="meta"><span class="chip">Desde las 12:00</span><span class="chip free">No pagas entrada</span></div>
+        <ul class="todo">
+          <li>Vienes al montaje por la mañana</li>
+          <li>Y luego colaboras en barras durante la fiesta</li>
+        </ul>
+        <div class="names"><span class="count"></span><ul></ul></div>
+      </article>
+    </div>
+    <p class="warn">Los 2 € son lo que cuesta más o menos la entrada sin consumición. Quién va finalmente al montaje se vota en el grupo cuando esté toda la gente.</p>
+  </section>
+
+  <section aria-labelledby="form-h">
+    <h2 id="form-h">Apúntate</h2>
+    <form id="signup" novalidate>
+      <div class="field">
+        <label for="name">Tu nombre</label>
+        <input type="text" id="name" name="name" maxlength="40" autocomplete="name" placeholder="Nombre y apellido" required>
+      </div>
+      <div class="field">
+        <span id="grp-label" style="font-weight:600;font-size:.92rem">Grupo</span>
+        <div class="radios" role="radiogroup" aria-labelledby="grp-label">
+          <label><input type="radio" name="group" id="g-montaje" value="montaje"> Montaje</label>
+          <label><input type="radio" name="group" id="g-barras" value="barras" checked> Barras</label>
+          <label><input type="radio" name="group" id="g-ambos" value="ambos"> Montaje + Barras</label>
+        </div>
+      </div>
+      <button type="submit" class="primary" id="submit">Apuntarme</button>
+      <p class="status" id="status" role="status"></p>
+      <div class="fallback" id="fallback" hidden>
+        <p>La lista aún no está conectada. Copia este mensaje y mándalo al grupo de WhatsApp:</p>
+        <code id="fallback-text"></code>
+        <button type="button" id="copy">Copiar mensaje</button>
+      </div>
+    </form>
+  </section>
+
+  <footer>Dudas: pregunta en el grupo “Voluntarios Sangriada ‘26”.</footer>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ====== CONFIGURA AQUÍ TU SUPABASE (Project Settings → API) ======
+const SUPABASE_URL = "";      // p. ej. "https://abcdxyz.supabase.co"
+const SUPABASE_ANON_KEY = ""; // la clave "anon public"
+// ==================================================================
+(function(){
+  const LABELS={montaje:"Montaje",barras:"Barras",ambos:"Montaje + Barras"};
+  const statusEl=document.getElementById("status");
+  const fallback=document.getElementById("fallback");
+  const fbText=document.getElementById("fallback-text");
+  const submitBtn=document.getElementById("submit");
+  let signups=[];
+  const sb=(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+
+  function setStatus(msg,kind){statusEl.className="status"+(kind?" "+kind:"");statusEl.textContent=msg||""}
+
+  function render(){
+    document.querySelectorAll(".group").forEach(card=>{
+      const g=card.dataset.group;
+      const list=signups.filter(s=>s.grupo===g);
+      const ul=card.querySelector(".names ul");
+      ul.textContent="";
+      card.querySelector(".count").textContent=list.length===1?"1 apuntado":list.length+" apuntados";
+      if(!list.length){const li=document.createElement("li");li.className="empty";li.style.cssText="border:0;background:none;padding:0";li.textContent=sb?"Nadie todavía":"Lista no conectada";ul.appendChild(li);return}
+      list.forEach(s=>{const li=document.createElement("li");li.style.paddingRight="9px";li.textContent=s.nombre;ul.appendChild(li)});
+    });
+  }
+
+  async function load(){
+    if(!sb){render();return}
+    const {data,error}=await sb.from("voluntarios").select("id,nombre,grupo,created_at").order("created_at",{ascending:true});
+    if(error){setStatus("No se pudo cargar la lista. Recarga la página.","err");return}
+    signups=data||[];render();
+  }
+
+  function showFallback(name,group){fbText.textContent="Me apunto a "+LABELS[group]+": "+name;fallback.hidden=false}
+
+  document.getElementById("signup").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const name=document.getElementById("name").value.trim().replace(/\s+/g," ").slice(0,40);
+    const g=(document.querySelector('input[name="group"]:checked')||{}).value;
+    if(!name){setStatus("Escribe tu nombre para apuntarte.","err");document.getElementById("name").focus();return}
+    if(!LABELS[g]){setStatus("Elige un grupo.","err");return}
+    if(!sb){setStatus("");showFallback(name,g);return}
+    if(signups.some(s=>s.nombre.toLowerCase()===name.toLowerCase()&&s.grupo===g)){setStatus(name+" ya está en "+LABELS[g]+".","err");return}
+    submitBtn.disabled=true;setStatus("Guardando…");
+    const {error}=await sb.from("voluntarios").insert({nombre:name,grupo:g});
+    submitBtn.disabled=false;
+    if(error){setStatus("No se pudo guardar. Prueba otra vez o avisa por el grupo.","err");showFallback(name,g);return}
+    setStatus("¡Apuntado a "+LABELS[g]+"!","ok");
+    document.getElementById("name").value="";
+    load();
+  });
+
+  document.getElementById("copy").addEventListener("click",()=>{
+    const t=fbText.textContent,btn=document.getElementById("copy");
+    const sel=()=>{const r=document.createRange();r.selectNodeContents(fbText);const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="Mantén pulsado para copiar"};
+    try{navigator.clipboard.writeText(t).then(()=>{btn.textContent="Copiado";setTimeout(()=>btn.textContent="Copiar mensaje",2000)},sel)}catch(e){sel()}
+  });
+
+  if(sb){
+    load();
+    sb.channel("voluntarios").on("postgres_changes",{event:"*",schema:"public",table:"voluntarios"},load).subscribe();
+  }else render();
+})();
+</script>
+</body>
+</html>
