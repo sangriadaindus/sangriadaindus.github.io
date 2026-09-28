@@ -257,7 +257,7 @@ td .acts{display:flex;gap:6px}
 
       <div class="avail-head">
         <h3>Disponibles por turno</h3>
-        <button type="button" class="btn2" id="copy-avail">Copiar listas</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn2" id="copy-avail">Copiar listas</button><button type="button" class="primary" id="export-pdf" style="padding:8px 16px;font-size:.9rem">Exportar PDF</button></div>
       </div>
       <div class="avail" id="avail"></div>
       <p class="warn" style="font-size:.85rem">"Sin preferencia" son los de barra que no han marcado turno: se pueden poner donde falte gente. Cada persona aparece en todos los turnos que marcó.</p>
@@ -481,6 +481,92 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
     else if(android){main.href=$("lnk-and").href;main.textContent="Descargar en Google Play";$("store-alt").innerHTML='¿Tienes iPhone? <a href="'+$("lnk-ios").href+'" target="_blank" rel="noopener">App Store</a>';}
     else{main.hidden=true;}
   })();
+
+  /* ---------- Exportar PDF ---------- */
+  function buildExportHTML(signups, bannerSrc){
+    const LABELS={montaje:"Montaje",barras:"Barras",ambos:"Montaje + Barras"};
+    const TURNOS={principio:"Principio",medio:"Medio",final:"Final"};
+    const hasBarra=g=>g==="barras"||g==="ambos";
+    const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+    const byName=(a,b)=>a.nombre.localeCompare(b.nombre,"es");
+    const SLOTS=[
+      {t:"Montaje",h:"Sobre las 12:00",f:s=>s.grupo==="montaje"||s.grupo==="ambos"},
+      {t:"Barra · Principio",h:"16:00 – 18:00",f:s=>hasBarra(s.grupo)&&s.turnos.includes("principio")},
+      {t:"Barra · Medio",h:"18:00 – 19:30",f:s=>hasBarra(s.grupo)&&s.turnos.includes("medio")},
+      {t:"Barra · Final",h:"19:30 – 21:00",f:s=>hasBarra(s.grupo)&&s.turnos.includes("final")},
+      {t:"Barra · Sin preferencia",h:"Donde haga falta",f:s=>hasBarra(s.grupo)&&!s.turnos.length}
+    ];
+    const now=new Date();
+    const fecha=now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})+", "+now.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
+    const stats=[["Apuntados",signups.length]].concat(Object.keys(LABELS).map(g=>[LABELS[g],signups.filter(s=>s.grupo===g).length]));
+    const slotsHTML=SLOTS.map(sl=>{
+      const ppl=signups.filter(sl.f).sort(byName);
+      return `<section class="slot">
+        <div class="slot-h"><h2>${sl.t}</h2><span class="hrs">${sl.h}</span><span class="n">${ppl.length}</span></div>
+        ${ppl.length?`<ol>${ppl.map(p=>`<li>${esc(p.nombre)}</li>`).join("")}</ol>`:`<p class="none">Nadie apuntado</p>`}
+      </section>`}).join("");
+    const rows=[...signups].sort(byName).map((s,i)=>`<tr><td class="num">${i+1}</td><td>${esc(s.nombre)}</td><td>${LABELS[s.grupo]||""}</td><td>${hasBarra(s.grupo)?(s.turnos.length?s.turnos.map(t=>TURNOS[t]).join(", "):"Sin preferencia"):"—"}</td><td class="pay">${s.grupo==="barras"?"2 €":"No paga"}</td></tr>`).join("");
+    return `<!doctype html><html lang="es"><head><meta charset="utf-8">
+  <title>Voluntarios Sangriada 2026</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&display=swap">
+  <style>
+  @page{size:A4;margin:14mm 14mm 16mm}
+  :root{--blue:#08306A;--sky:#BCDDF8;--ink:#1B2433;--muted:#5F6B7D;--line:#DCE4EF;--tint:#F2F6FB}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#fff;color:var(--ink);font:11pt/1.45 "Figtree",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{max-width:182mm;margin:0 auto;padding:16px 0}
+  h1,h2,h3{font-family:"Anton","Impact",sans-serif;font-weight:400;color:var(--blue);text-transform:uppercase;letter-spacing:.01em;margin:0;line-height:1.05}
+  .banner{display:block;width:100%;border-radius:10px}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:14px 0 6px;border-bottom:3px solid var(--blue);padding-bottom:8px}
+  .head h1{font-size:30pt}
+  .head .meta{text-align:right;font-size:9pt;color:var(--muted)}
+  .head .meta b{display:block;color:var(--blue);font-size:10pt}
+  .stats{display:flex;gap:8px;margin:12px 0 18px;flex-wrap:wrap}
+  .stat{flex:1 1 0;min-width:28mm;border:1.5px solid var(--line);border-radius:8px;padding:6px 10px}
+  .stat b{display:block;font-family:"Anton",sans-serif;font-weight:400;font-size:20pt;color:var(--blue);line-height:1.1}
+  .stat span{font-size:8.5pt;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .slots{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .slot{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;break-inside:avoid}
+  .slot:first-child{grid-column:1 / -1}
+  .slot-h{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px}
+  .slot-h h2{font-size:15pt}
+  .slot-h .hrs{font-size:9pt;color:var(--muted);font-weight:600}
+  .slot-h .n{margin-left:auto;background:var(--blue);color:#fff;font-weight:700;font-size:9.5pt;border-radius:99px;padding:1px 9px;font-variant-numeric:tabular-nums}
+  .slot ol{margin:0;padding-left:20px;columns:2;column-gap:14px;font-size:10.5pt}
+  .slot:first-child ol{columns:3}
+  .slot li{break-inside:avoid;padding:1px 0}
+  .slot li::marker{color:var(--muted);font-size:8.5pt}
+  .none{margin:0;color:var(--muted);font-style:italic;font-size:10pt}
+  .full{break-before:page;margin-top:6px}
+  .full h2{font-size:18pt;margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;font-size:10pt}
+  th{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--blue);text-align:left;padding:6px 8px;font-size:10pt}
+  td{padding:5px 8px;border-bottom:1px solid var(--line)}
+  tr:nth-child(even) td{background:var(--tint)}
+  td.num{color:var(--muted);width:8mm;font-variant-numeric:tabular-nums}
+  td.pay{white-space:nowrap;color:var(--muted)}
+  thead{display:table-header-group}
+  tr{break-inside:avoid}
+  .foot{margin-top:14px;font-size:8.5pt;color:var(--muted);display:flex;justify-content:space-between}
+  @media screen{body{background:#E9EEF5}.page{background:#fff;padding:14mm;margin:16px auto;box-shadow:0 2px 16px rgba(8,48,106,.12);border-radius:6px}}
+  </style></head><body><div class="page">
+  ${bannerSrc?`<img class="banner" src="${bannerSrc}" alt="Sangriada Industriales 2026">`:""}
+  <div class="head"><h1>Voluntarios por turno</h1><div class="meta"><b>Sábado 3 de octubre</b>Lista a ${fecha}</div></div>
+  <div class="stats">${stats.map(([l,n])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("")}</div>
+  <div class="slots">${slotsHTML}</div>
+  <p class="foot"><span>Cada persona aparece en todos los turnos que marcó. Las preferencias no son definitivas.</span></p>
+  <div class="full"><h2>Lista completa</h2>
+  <table><thead><tr><th>#</th><th>Nombre</th><th>Grupo</th><th>Turnos de barra</th><th>Entrada</th></tr></thead><tbody>${rows||`<tr><td colspan="5">Todavía no hay nadie apuntado.</td></tr>`}</tbody></table>
+  <p class="foot"><span>Sangriada Industriales 2026 · ETSII</span><span>${signups.length} personas</span></p></div>
+  </div><script>window.addEventListener("load",()=>{(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(()=>window.print(),300))});<\/script></body></html>`;
+  }
+  
+  $("export-pdf").addEventListener("click",()=>{
+    const w=window.open("","_blank");
+    if(!w){setStatus($("admin-status"),"Tu navegador ha bloqueado la ventana. Permite ventanas emergentes para esta web y vuelve a pulsar.","err");return}
+    const banner=(document.querySelector(".banner")||{}).src||"";
+    w.document.open();w.document.write(buildExportHTML(signups,banner));w.document.close();
+  });
 
   /* ---------- Arranque ---------- */
   if(sb){
