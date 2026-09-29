@@ -505,7 +505,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
       const cols=sl.wide?(ppl.length>30?4:3):(ppl.length>24?3:2);
       return `<section class="slot${sl.wide?" wide":""}">
         <div class="slot-h"><h2>${sl.t}</h2><span class="hrs">${sl.h}</span><span class="n">${ppl.length}</span></div>
-        ${ppl.length?`<ol style="columns:${cols}">${ppl.map(p=>`<li>${esc(p.nombre)}</li>`).join("")}</ol>`:`<p class="none">Nadie apuntado</p>`}
+        ${ppl.length?`<div class="names" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-template-rows:repeat(${Math.ceil(ppl.length/cols)},auto)">${ppl.map((p,i)=>`<div class="nm"><span class="ix">${i+1}.</span>${esc(p.nombre)}</div>`).join("")}</div>`:`<p class="none">Nadie apuntado</p>`}
       </section>`}).join("");
   
     const sorted=[...signups].sort(byName);
@@ -547,9 +547,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
   .slot-h h2{font-size:1.35em}
   .slot-h .hrs{font-size:.8em;color:var(--muted);font-weight:600;white-space:nowrap}
   .slot-h .n{margin-left:auto;background:var(--blue);color:#fff;font-weight:700;font-size:.85em;border-radius:99px;padding:.05em .8em}
-  .slot ol{margin:0;padding-left:1.8em;column-gap:1.2em;font-size:.95em}
-  .slot li{break-inside:avoid;padding:.05em 0}
-  .slot li::marker{color:var(--muted);font-size:.8em}
+  .names{display:grid;grid-auto-flow:column;column-gap:1.2em;font-size:.95em}
+  .names .nm{padding:.05em 0;display:flex;gap:.35em;min-width:0}
+  .names .ix{color:var(--muted);font-size:.8em;min-width:1.6em;text-align:right;padding-top:.15em;font-variant-numeric:tabular-nums}
   .none{margin:0;color:var(--muted);font-style:italic;font-size:.9em}
   .foot{margin:.9em 0 0;font-size:.78em;color:var(--muted);display:flex;justify-content:space-between;gap:1em}
   .list-h{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--blue);padding-bottom:.6em;margin-bottom:.9em}
@@ -580,7 +580,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
   <script>
   function fit(sheet,opts){
     const inner=sheet.querySelector(".inner");
-    const room=()=>sheet.clientHeight-parseFloat(getComputedStyle(sheet).paddingTop)-parseFloat(getComputedStyle(sheet).paddingBottom);
+    const room=()=>0.96*sheet.clientHeight-parseFloat(getComputedStyle(sheet).paddingTop)-parseFloat(getComputedStyle(sheet).paddingBottom);
     let k=1; sheet.style.setProperty("--k",k);
     while(inner.scrollHeight>room() && k>opts.min){ k=Math.round((k-0.03)*100)/100; sheet.style.setProperty("--k",k); }
     if(inner.scrollHeight>room() && opts.banner){ const b=sheet.querySelector(".banner"); if(b){ b.style.display="none"; k=1; sheet.style.setProperty("--k",k); while(inner.scrollHeight>room() && k>opts.min){ k=Math.round((k-0.03)*100)/100; sheet.style.setProperty("--k",k);} } }
