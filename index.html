@@ -490,7 +490,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
     const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
     const byName=(a,b)=>a.nombre.localeCompare(b.nombre,"es");
     const SLOTS=[
-      {t:"Montaje",h:"Sobre las 12:00",f:s=>s.grupo==="montaje"||s.grupo==="ambos"},
+      {t:"Montaje",h:"Sobre las 12:00",f:s=>s.grupo==="montaje"||s.grupo==="ambos",wide:true},
       {t:"Barra · Principio",h:"16:00 – 18:00",f:s=>hasBarra(s.grupo)&&s.turnos.includes("principio")},
       {t:"Barra · Medio",h:"18:00 – 19:30",f:s=>hasBarra(s.grupo)&&s.turnos.includes("medio")},
       {t:"Barra · Final",h:"19:30 – 21:00",f:s=>hasBarra(s.grupo)&&s.turnos.includes("final")},
@@ -499,68 +499,96 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
     const now=new Date();
     const fecha=now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})+", "+now.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
     const stats=[["Apuntados",signups.length]].concat(Object.keys(LABELS).map(g=>[LABELS[g],signups.filter(s=>s.grupo===g).length]));
+  
     const slotsHTML=SLOTS.map(sl=>{
       const ppl=signups.filter(sl.f).sort(byName);
-      return `<section class="slot">
+      const cols=sl.wide?(ppl.length>30?4:3):(ppl.length>24?3:2);
+      return `<section class="slot${sl.wide?" wide":""}">
         <div class="slot-h"><h2>${sl.t}</h2><span class="hrs">${sl.h}</span><span class="n">${ppl.length}</span></div>
-        ${ppl.length?`<ol>${ppl.map(p=>`<li>${esc(p.nombre)}</li>`).join("")}</ol>`:`<p class="none">Nadie apuntado</p>`}
+        ${ppl.length?`<ol style="columns:${cols}">${ppl.map(p=>`<li>${esc(p.nombre)}</li>`).join("")}</ol>`:`<p class="none">Nadie apuntado</p>`}
       </section>`}).join("");
-    const rows=[...signups].sort(byName).map((s,i)=>`<tr><td class="num">${i+1}</td><td>${esc(s.nombre)}</td><td>${LABELS[s.grupo]||""}</td><td>${hasBarra(s.grupo)?(s.turnos.length?s.turnos.map(t=>TURNOS[t]).join(", "):"Sin preferencia"):"—"}</td><td class="pay">${s.grupo==="barras"?"2 €":"No paga"}</td></tr>`).join("");
+  
+    const sorted=[...signups].sort(byName);
+    const twoCols=sorted.length>38;
+    const rowHTML=(s,i)=>`<tr><td class="num">${i+1}</td><td class="nm">${esc(s.nombre)}</td><td>${LABELS[s.grupo]||""}</td><td>${hasBarra(s.grupo)?(s.turnos.length?s.turnos.map(t=>TURNOS[t]).join(", "):"Sin pref."):"—"}</td>${twoCols?"":`<td class="pay">${s.grupo==="barras"?"2 €":"No paga"}</td>`}</tr>`;
+    const head=`<thead><tr><th>#</th><th>Nombre</th><th>Grupo</th><th>Turnos</th>${twoCols?"":"<th>Entrada</th>"}</tr></thead>`;
+    let tables;
+    if(!sorted.length) tables=`<table>${head}<tbody><tr><td colspan="5">Todavía no hay nadie apuntado.</td></tr></tbody></table>`;
+    else if(twoCols){
+      const half=Math.ceil(sorted.length/2);
+      tables=`<div class="twocol"><table>${head}<tbody>${sorted.slice(0,half).map((s,i)=>rowHTML(s,i)).join("")}</tbody></table><table>${head}<tbody>${sorted.slice(half).map((s,i)=>rowHTML(s,i+half)).join("")}</tbody></table></div>`;
+    } else tables=`<table>${head}<tbody>${sorted.map(rowHTML).join("")}</tbody></table>`;
+  
     return `<!doctype html><html lang="es"><head><meta charset="utf-8">
   <title>Voluntarios Sangriada 2026</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&display=swap">
   <style>
-  @page{size:A4;margin:14mm 14mm 16mm}
-  :root{--blue:#08306A;--sky:#BCDDF8;--ink:#1B2433;--muted:#5F6B7D;--line:#DCE4EF;--tint:#F2F6FB}
+  @page{size:A4;margin:0}
+  :root{--blue:#08306A;--ink:#1B2433;--muted:#5F6B7D;--line:#DCE4EF;--tint:#F2F6FB}
   *{box-sizing:border-box}
-  html,body{margin:0;background:#fff;color:var(--ink);font:11pt/1.45 "Figtree",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .page{max-width:182mm;margin:0 auto;padding:16px 0}
-  h1,h2,h3{font-family:"Anton","Impact",sans-serif;font-weight:400;color:var(--blue);text-transform:uppercase;letter-spacing:.01em;margin:0;line-height:1.05}
-  .banner{display:block;width:100%;border-radius:10px}
-  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:14px 0 6px;border-bottom:3px solid var(--blue);padding-bottom:8px}
-  .head h1{font-size:30pt}
-  .head .meta{text-align:right;font-size:9pt;color:var(--muted)}
-  .head .meta b{display:block;color:var(--blue);font-size:10pt}
-  .stats{display:flex;gap:8px;margin:12px 0 18px;flex-wrap:wrap}
-  .stat{flex:1 1 0;min-width:28mm;border:1.5px solid var(--line);border-radius:8px;padding:6px 10px}
-  .stat b{display:block;font-family:"Anton",sans-serif;font-weight:400;font-size:20pt;color:var(--blue);line-height:1.1}
-  .stat span{font-size:8.5pt;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
-  .slots{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .slot{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;break-inside:avoid}
-  .slot:first-child{grid-column:1 / -1}
-  .slot-h{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px}
-  .slot-h h2{font-size:15pt}
-  .slot-h .hrs{font-size:9pt;color:var(--muted);font-weight:600}
-  .slot-h .n{margin-left:auto;background:var(--blue);color:#fff;font-weight:700;font-size:9.5pt;border-radius:99px;padding:1px 9px;font-variant-numeric:tabular-nums}
-  .slot ol{margin:0;padding-left:20px;columns:2;column-gap:14px;font-size:10.5pt}
-  .slot:first-child ol{columns:3}
-  .slot li{break-inside:avoid;padding:1px 0}
-  .slot li::marker{color:var(--muted);font-size:8.5pt}
-  .none{margin:0;color:var(--muted);font-style:italic;font-size:10pt}
-  .full{break-before:page;margin-top:6px}
-  .full h2{font-size:18pt;margin-bottom:8px}
-  table{width:100%;border-collapse:collapse;font-size:10pt}
-  th{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--blue);text-align:left;padding:6px 8px;font-size:10pt}
-  td{padding:5px 8px;border-bottom:1px solid var(--line)}
+  html,body{margin:0;background:#fff;color:var(--ink);font-family:"Figtree",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sheet{--k:1;width:210mm;height:297mm;padding:13mm 14mm;overflow:hidden;display:flex;flex-direction:column;font-size:calc(11pt * var(--k));line-height:1.4;break-after:page;page-break-after:always;background:#fff}
+  .sheet:last-child{break-after:auto;page-break-after:auto}
+  .inner{display:flex;flex-direction:column}
+  h1,h2{font-family:"Anton","Impact",sans-serif;font-weight:400;color:var(--blue);text-transform:uppercase;letter-spacing:.01em;margin:0;line-height:1.05}
+  .banner{display:block;width:100%;height:calc(75mm * var(--k));object-fit:contain;background:#003369;border-radius:.9em}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:1em;margin:1.1em 0 .5em;border-bottom:3px solid var(--blue);padding-bottom:.6em}
+  .head h1{font-size:2.7em}
+  .head .meta{text-align:right;font-size:.82em;color:var(--muted)}
+  .head .meta b{display:block;color:var(--blue);font-size:1.1em}
+  .stats{display:flex;gap:.7em;margin:1em 0 1.3em}
+  .stat{flex:1 1 0;border:1.5px solid var(--line);border-radius:.7em;padding:.45em .8em}
+  .stat b{display:block;font-family:"Anton",sans-serif;font-weight:400;font-size:1.8em;color:var(--blue);line-height:1.1}
+  .stat span{font-size:.75em;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .slots{display:grid;grid-template-columns:1fr 1fr;gap:.8em}
+  .slot{border:1.5px solid var(--line);border-radius:.9em;padding:.8em 1em}
+  .slot.wide{grid-column:1 / -1}
+  .slot-h{display:flex;align-items:baseline;gap:.6em;border-bottom:1px solid var(--line);padding-bottom:.45em;margin-bottom:.45em}
+  .slot-h h2{font-size:1.35em}
+  .slot-h .hrs{font-size:.8em;color:var(--muted);font-weight:600;white-space:nowrap}
+  .slot-h .n{margin-left:auto;background:var(--blue);color:#fff;font-weight:700;font-size:.85em;border-radius:99px;padding:.05em .8em}
+  .slot ol{margin:0;padding-left:1.8em;column-gap:1.2em;font-size:.95em}
+  .slot li{break-inside:avoid;padding:.05em 0}
+  .slot li::marker{color:var(--muted);font-size:.8em}
+  .none{margin:0;color:var(--muted);font-style:italic;font-size:.9em}
+  .foot{margin:.9em 0 0;font-size:.78em;color:var(--muted);display:flex;justify-content:space-between;gap:1em}
+  .list-h{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--blue);padding-bottom:.6em;margin-bottom:.9em}
+  .list-h h1{font-size:2.4em}
+  .list-h span{font-size:.82em;color:var(--muted)}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:1em;align-items:start}
+  table{width:100%;border-collapse:collapse;font-size:.9em}
+  th{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--blue);text-align:left;padding:.45em .6em}
+  td{padding:.32em .6em;border-bottom:1px solid var(--line);vertical-align:top}
   tr:nth-child(even) td{background:var(--tint)}
-  td.num{color:var(--muted);width:8mm;font-variant-numeric:tabular-nums}
+  td.num{color:var(--muted);width:2.2em;font-variant-numeric:tabular-nums}
   td.pay{white-space:nowrap;color:var(--muted)}
-  thead{display:table-header-group}
-  tr{break-inside:avoid}
-  .foot{margin-top:14px;font-size:8.5pt;color:var(--muted);display:flex;justify-content:space-between}
-  @media screen{body{background:#E9EEF5}.page{background:#fff;padding:14mm;margin:16px auto;box-shadow:0 2px 16px rgba(8,48,106,.12);border-radius:6px}}
-  </style></head><body><div class="page">
+  @media screen{body{background:#E9EEF5;padding:16px 0}.sheet{margin:0 auto 16px;box-shadow:0 2px 16px rgba(8,48,106,.12)}}
+  </style></head><body>
+  <div class="sheet" id="p1"><div class="inner">
   ${bannerSrc?`<img class="banner" src="${bannerSrc}" alt="Sangriada Industriales 2026">`:""}
   <div class="head"><h1>Voluntarios por turno</h1><div class="meta"><b>Sábado 3 de octubre</b>Lista a ${fecha}</div></div>
   <div class="stats">${stats.map(([l,n])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("")}</div>
   <div class="slots">${slotsHTML}</div>
   <p class="foot"><span>Cada persona aparece en todos los turnos que marcó. Las preferencias no son definitivas.</span></p>
-  <div class="full"><h2>Lista completa</h2>
-  <table><thead><tr><th>#</th><th>Nombre</th><th>Grupo</th><th>Turnos de barra</th><th>Entrada</th></tr></thead><tbody>${rows||`<tr><td colspan="5">Todavía no hay nadie apuntado.</td></tr>`}</tbody></table>
-  <p class="foot"><span>Sangriada Industriales 2026 · ETSII</span><span>${signups.length} personas</span></p></div>
-  </div><script>window.addEventListener("load",()=>{(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(()=>window.print(),300))});<\/script></body></html>`;
+  </div></div>
+  <div class="sheet" id="p2"><div class="inner">
+  <div class="list-h"><h1>Lista de voluntarios</h1><span>${sorted.length} personas · ${fecha}</span></div>
+  ${tables}
+  <p class="foot"><span>Sangriada Industriales 2026 · ETSII</span></p>
+  </div></div>
+  <script>
+  function fit(sheet,opts){
+    const inner=sheet.querySelector(".inner");
+    const room=()=>sheet.clientHeight-parseFloat(getComputedStyle(sheet).paddingTop)-parseFloat(getComputedStyle(sheet).paddingBottom);
+    let k=1; sheet.style.setProperty("--k",k);
+    while(inner.scrollHeight>room() && k>opts.min){ k=Math.round((k-0.03)*100)/100; sheet.style.setProperty("--k",k); }
+    if(inner.scrollHeight>room() && opts.banner){ const b=sheet.querySelector(".banner"); if(b){ b.style.display="none"; k=1; sheet.style.setProperty("--k",k); while(inner.scrollHeight>room() && k>opts.min){ k=Math.round((k-0.03)*100)/100; sheet.style.setProperty("--k",k);} } }
   }
-  
+  function run(){ fit(document.getElementById("p1"),{min:0.5,banner:true}); fit(document.getElementById("p2"),{min:0.45}); }
+  window.addEventListener("load",()=>{(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{run(); if(!window.__noPrint) setTimeout(()=>window.print(),300);});});
+  <\/script>
+  </body></html>`;
+  }
   $("export-pdf").addEventListener("click",()=>{
     const w=window.open("","_blank");
     if(!w){setStatus($("admin-status"),"Tu navegador ha bloqueado la ventana. Permite ventanas emergentes para esta web y vuelve a pulsar.","err");return}
