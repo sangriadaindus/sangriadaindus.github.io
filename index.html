@@ -523,15 +523,15 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
   <title>Voluntarios Sangriada 2026</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&display=swap">
   <style>
-  @page{size:A4;margin:0}
+  @page{size:A4 portrait;margin:12mm}
   :root{--blue:#08306A;--ink:#1B2433;--muted:#5F6B7D;--line:#DCE4EF;--tint:#F2F6FB}
   *{box-sizing:border-box}
   html,body{margin:0;background:#fff;color:var(--ink);font-family:"Figtree",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .sheet{--k:1;width:210mm;height:297mm;padding:13mm 14mm;overflow:hidden;display:flex;flex-direction:column;font-size:calc(11pt * var(--k));line-height:1.4;break-after:page;page-break-after:always;background:#fff}
+  .sheet{--k:1;width:182mm;height:266mm;padding:0;overflow:hidden;display:block;page-break-inside:avoid;break-inside:avoid;font-size:calc(11pt * var(--k));line-height:1.4;break-after:page;page-break-after:always;background:#fff}
   .sheet:last-child{break-after:auto;page-break-after:auto}
   .inner{display:flex;flex-direction:column}
   h1,h2{font-family:"Anton","Impact",sans-serif;font-weight:400;color:var(--blue);text-transform:uppercase;letter-spacing:.01em;margin:0;line-height:1.05}
-  .banner{display:block;width:100%;height:calc(75mm * var(--k));object-fit:contain;background:#003369;border-radius:.9em}
+  .banner{display:block;width:100%;height:calc(68mm * var(--k));object-fit:contain;background:#003369;border-radius:.9em}
   .head{display:flex;justify-content:space-between;align-items:flex-end;gap:1em;margin:1.1em 0 .5em;border-bottom:3px solid var(--blue);padding-bottom:.6em}
   .head h1{font-size:2.7em}
   .head .meta{text-align:right;font-size:.82em;color:var(--muted)}
@@ -562,7 +562,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_PPvm7HEXCbv-gDCHuH0cxQ_mV97-Gz6";
   tr:nth-child(even) td{background:var(--tint)}
   td.num{color:var(--muted);width:2.2em;font-variant-numeric:tabular-nums}
   td.pay{white-space:nowrap;color:var(--muted)}
-  @media screen{body{background:#E9EEF5;padding:16px 0}.sheet{margin:0 auto 16px;box-shadow:0 2px 16px rgba(8,48,106,.12)}}
+  @media screen{body{background:#E9EEF5;padding:16px 0}.sheet{margin:0 auto 16px;box-sizing:content-box;padding:12mm 14mm;box-shadow:0 2px 16px rgba(8,48,106,.12)}}
+  @media print{html,body{width:auto;height:auto;background:#fff}.sheet{margin:0;box-shadow:none}}
   </style></head><body>
   <div class="sheet" id="p1"><div class="inner">
   ${bannerSrc?`<img class="banner" src="${bannerSrc}" alt="Sangriada Industriales 2026">`:""}
